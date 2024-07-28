@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block title %} <title>Profile Shop</title>{% endblock %}
+
+{% block content %}
+    <a href="{% url 'update_user' %}">Update User</a>
+    {% include 'new_shoop/product.html' %}
+
+{% endblock %}
+
