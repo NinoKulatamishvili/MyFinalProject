@@ -8,16 +8,27 @@ from .forms import MyUserCreationForm, ProductsForm, UserForm
 from . seeder import seeder_func
 from django.contrib import messages
 
-# Create your views here.
+#Create your views here.
+# def home(request):
+#     q=request.GET.get('q') if request.GET.get('q') !=None else ''
+#     seeder_func()
+#     products = Products.objects.filter(Q(category_name__icontains=q) | Q(stock_quantity__icontains=q) | Q(category__icontains=q)) #
+#     products = list(dict.fromkeys(products))
+#     #products=Products.objects.all()
+#     gender=Gender.objects.all()
+#     context = {"products": products, 'gender': gender}  #პითონიდან გადავცეთ ინფორმაცია გვერდს
+#     return render(request, "new_shoop/home.html", context)
 def home(request):
-    q=request.GET.get('q') if request.GET.get('q') !=None else ''
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
     seeder_func()
-    products = Products.objects.filter(Q(category_name__icontains=q) | Q(stock_quantity__icontains=q))
-    products = list(dict.fromkeys(products))
-    #products=Products.objects.all()
-    gender=Gender.objects.all()
-    context = {"products": products, 'gender': gender}  #პითონიდან გადავცეთ ინფორმაცია გვერდს
+    products = Products.objects.filter(
+
+        Q(description__icontains=q)
+    ).distinct()    #Q(category_name__icontains=q) |Q(stock_quantity__icontains=q)
+    gender = Gender.objects.all()
+    context = {"products": products, 'gender': gender}
     return render(request, "new_shoop/home.html", context)
+
 
 
 def about(request):
@@ -115,36 +126,25 @@ def add_product(request):
     form = ProductsForm()
 
     if request.method == 'POST':
-        product_category = request.POST.get('category')
-        product_gender = request.POST.get('gender')
-
-        category, created = Categories.objects.get_or_create(category=product_category)
-        gender, created = Gender.objects.get_or_create(category=product_gender)
-
         form = ProductsForm(request.POST, request.FILES)
 
         if form.is_valid():
-            new_product = Products(
-                picture=request.FILES.get('picture'),
-                category=category,
-                category_name=form.cleaned_data['category_name'],
-                price=form.cleaned_data['price'],
-                stock_quantity=form.cleaned_data['stock_quantity'],
-                file=request.FILES.get('file'),
-                creator=request.user
-            )
+            product = form.save(commit=False)
+            product.creator = request.user
+            product.save()
 
-            if not (Products.objects.filter(picture=request.FILES.get('picture')) or Products.objects.filter(
-                    category_name=new_product.category_name)):
-                new_product.save()
-                new_product.gender.add(gender)
-            else:
-                messages.error(request, 'Product with the same name already exists...')
+
+            gender_ids = request.POST.getlist('gender')
+            product.gender.set(gender_ids)
+            product.save()
+
+            messages.success(request, 'Product added successfully')
             return redirect('home')
+        else:
+            messages.error(request, 'Please correct the errors below.')
 
     context = {'form': form, 'categories': categories, 'genders': genders}
     return render(request, 'new_shoop/add_product.html', context)
-
 
 def reading(request, id):
     product = Products.objects.get(id=id)

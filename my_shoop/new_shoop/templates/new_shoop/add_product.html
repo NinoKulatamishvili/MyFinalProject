@@ -15,6 +15,7 @@
                             </svg>
                         </a>
                         <h3>Add New Product</h3>
+                        <br>
                     </div>
                 </div>
                 <div class="layout__body">
@@ -23,20 +24,47 @@
                         <div class="form__group">
                             <label>Product Cover:</label>
                             {{ form.picture }}
+                            <br>
                         </div>
+                        <br>
                         <div class="form__group">
                             <label>Category:</label>
-                            <input required type="text" name="category" list="category-list">
-                            <datalist id="category-list">
+                            <select name="category">
                                 {% for category in categories %}
-                                    <option value="{{ category.category_name }}">{{ category.category_name }}</option>
+                                    <option value="{{ category.id }}">{{ category.category_name }}</option>
                                 {% endfor %}
-                            </datalist>
+                            </select>
                         </div>
+                        <br>
+                        <div class="form__group">
+                            <label>Gender:</label>
+                            <select name="gender" multiple>
+                                {% for gender in genders %}
+                                    <option value="{{ gender.id }}">{{ gender.category }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form__group">
+                            <label>Product Name:</label>
+                            {{ form.category_name }}
+                        </div>
+                        <br>
+                        <div class="form__group">
+                            <label>Price:</label>
+                            {{ form.price }}
+                        </div>
+                        <br>
+                        <div class="form__group">
+                            <label>Stock Quantity:</label>
+                            {{ form.stock_quantity }}
+                        </div>
+                        <br>
                         <div class="form__group">
                             <label>Product Description:</label>
                             {{ form.description }}
                         </div>
+
                         <div class="form__action">
                             <a class="btn btn--dark" href="{% url 'home' %}">Cancel</a>
                             <button class="btn btn--main" type="submit">Create Product</button>

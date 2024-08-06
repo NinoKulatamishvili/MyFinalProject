@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, Products
 from django.forms import ModelForm
 
+
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = User
