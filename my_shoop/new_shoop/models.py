@@ -18,15 +18,15 @@ class Gender(models.Model):
 
 
 class Products(models.Model):
-    creator=models.ForeignKey('User', on_delete=models.SET("Unknown Creators")) #
-    picture= models.ImageField(null=True, blank=True)
+    creator = models.ForeignKey('User', on_delete=models.SET("Unknown Creators")) #
+    picture = models.ImageField(null=True, blank=True)
     category_name = models.CharField(max_length=150) #რა პროდუქტია
-    category=models.ForeignKey(Categories, on_delete=models.SET('Unknown Categories')) #სქესი
-    gender=models.ManyToManyField(Gender, related_name='products', blank=True) #products
-    price=models.CharField(max_length=10)    #როცა რიცხვებზეა საუბარი რას ვირჩევ
+    category = models.ForeignKey(Categories, on_delete=models.CASCADE) #სქესი
+    gender = models.ManyToManyField(Gender, related_name='products', blank=True) #products
+    price = models.CharField(max_length=10)    #როცა რიცხვებზეა საუბარი რას ვირჩევ
     stock_quantity = models.CharField(max_length=10)
-    description= models.TextField(max_length=500)
-    file=models.FileField(null=True),
+    description = models.TextField(max_length=500)
+    file = models.FileField(null=True),
     created = models.DateTimeField(auto_now_add=True) #
     update = models.DateTimeField(auto_now=True) #
 

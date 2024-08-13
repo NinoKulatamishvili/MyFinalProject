@@ -9,22 +9,23 @@
     </head>
     <body>
     {% block content %}
-        <h1>Login Page HTML</h1>
-    <form method="POST", action="">
+        <h1 style="display:flex; justify-content:center;" >Login Page HTML</h1>
+    <form method="POST", action="" style="display:flex; justify-content:center; align-items: center; flex-direction:column;"  >
         {% csrf_token %}
         <label>Username :</label>
-        <br>
+
         <input type="text" name="username">
         <br>
         <br>
         <label>Password :</label>
+
         <input type="password" name="password">
         <br>
-        <input type="submit" value="Login">
+        <input type="submit" value="Login" class="btn btn-primary">
 <br>
         <br>
         <p>Have not sign up yet?</p>
-        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
     </form>
     {% endblock %}
 

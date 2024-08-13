@@ -20,7 +20,7 @@ from django.contrib import messages
 #     return render(request, "new_shoop/home.html", context)
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') is not None else ''
-    seeder_func()
+    # seeder_func()
     products = Products.objects.filter(
 
         Q(description__icontains=q)
@@ -126,22 +126,20 @@ def add_product(request):
     form = ProductsForm()
 
     if request.method == 'POST':
-        form = ProductsForm(request.POST, request.FILES)
+        try:
+            form = ProductsForm(request.POST)
+            product_category = Categories.objects.get(id=form.data['category'])
+            product = Products(creator=request.user, picture=request.FILES['picture'], category_name=form.data['category_name'],
+                               category=product_category, price=form.data['price'], description=form.data['description'],
+                               stock_quantity=form.data['stock_quantity'])
 
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.creator = request.user
             product.save()
-
-
             gender_ids = request.POST.getlist('gender')
             product.gender.set(gender_ids)
-            product.save()
-
             messages.success(request, 'Product added successfully')
-            return redirect('home')
-        else:
+        except:
             messages.error(request, 'Please correct the errors below.')
+            return redirect('home')
 
     context = {'form': form, 'categories': categories, 'genders': genders}
     return render(request, 'new_shoop/add_product.html', context)
